@@ -15,9 +15,9 @@ apt-get update
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Clone the repo and bring the stack up
-cd /opt
-git clone ${repo_url} ci-teaching-kit
-cd ci-teaching-kit
+cd /opt 
+git clone ${repo_url} ci-teaching-kit-k8s
+cd ci-teaching-kit-k8s/CI-TEACHING-KIT-K8S
 docker compose up -d --build
 
 # Note: this brings the stack up automatically on VM creation. Nexus and the

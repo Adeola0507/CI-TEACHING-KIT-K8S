@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "Your GCP project ID"
   type        = string
-  default     = "terraform-provisioning-503017"
+  default     = "ci-teaching-kit-demo"
 }
 
 variable "region" {
@@ -37,11 +37,11 @@ variable "gke_machine_type" {
 variable "admin_ip" {
   description = "Your own public IP (as CIDR, e.g. 203.0.113.5/32), allowed full admin access to Jenkins/Nexus/Tomcat UIs. Find yours at https://whatismyip.com"
   type        = string
-  default     = "197.211.59.186"
+  default     = "102.89.82.140"
 }
 
 variable "repo_url" {
   description = "Git repo URL the VM will clone on startup"
   type        = string
-  default     = "https://github.com/dale-code/CI-DEMO.git"
+  default     = "https://github.com/Adeola0507/CI-TEACHING-KIT-K8S.git"
 }

@@ -8,6 +8,7 @@ terraform/*.tfplan
 terraform/crash.log
 terraform/crash.*.log
 
+
 # --- GCP service account key — never commit this ---
 github-actions-key.json
 
@@ -17,3 +18,4 @@ app/target/
 # --- OS-specific junk files ---
 .DS_Store
 Thumbs.db
+github-actions-key.json

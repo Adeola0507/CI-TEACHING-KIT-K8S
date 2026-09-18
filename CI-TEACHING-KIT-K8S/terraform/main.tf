@@ -17,7 +17,7 @@ resource "google_compute_instance" "ci_stack" {
   name         = "ci-teaching-kit-vm"
   machine_type = var.machine_type
   zone         = var.zone
-  tags         = ["ci-stack"]
+  tags         = ["ci-stack-deola"]
 
   boot_disk {
     initialize_params {
@@ -43,7 +43,7 @@ resource "google_compute_instance" "ci_stack" {
 # Port 8082 (Tomcat) is gone from here — Tomcat now runs inside GKE,
 # exposed via its own LoadBalancer Service, not this VM.
 resource "google_compute_firewall" "admin_access" {
-  name    = "allow-ci-stack-admin"
+  name    = "allow-ci-stack-admin-deola"
   network = "default"
 
   allow {
@@ -52,7 +52,7 @@ resource "google_compute_firewall" "admin_access" {
   }
 
   source_ranges = [var.admin_ip]
-  target_tags   = ["ci-stack"]
+  target_tags   = ["ci-stack-deola"]
 }
 
 # GitHub-hosted Actions runners do NOT have published, stable IP ranges
@@ -69,7 +69,7 @@ resource "google_compute_firewall" "admin_access" {
 # teaching VM that gets torn down after class; NOT acceptable for
 # anything long-lived or holding real data.
 resource "google_compute_firewall" "actions_runner_access" {
-  name    = "allow-github-actions-runner"
+  name    = "allow-github-actions-runner-deola"
   network = "default"
 
   allow {
@@ -78,7 +78,7 @@ resource "google_compute_firewall" "actions_runner_access" {
   }
 
   source_ranges = ["0.0.0.0/0"]
-  target_tags   = ["ci-stack"]
+  target_tags   = ["ci-stack-deola"]
 }
 
 # --- Kubernetes (GKE) ---
@@ -111,7 +111,7 @@ resource "google_artifact_registry_repository" "ci_demo_repo" {
 # across zones for actual high availability.
 resource "google_container_cluster" "ci_demo_cluster" {
   depends_on = [google_project_service.container]
-  name       = "ci-demo-cluster"
+  name       = "ci-demo-cluster-deola"
   location   = var.zone
 
   # Removing the default node pool immediately and defining our own
