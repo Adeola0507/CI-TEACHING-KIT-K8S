@@ -127,10 +127,36 @@ jobs:
       - name: Get the app's external IP and verify
         run: |
           echo "Waiting for LoadBalancer IP to be assigned..."
+
           for i in {1..30}; do
             IP=$(kubectl get service ci-demo-app-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-            if [ -n "$IP" ]; then break; fi
+
+            if [ -n "$IP" ]; then
+              echo "LoadBalancer IP: $IP"
+              break
+            fi
+
+            echo "LoadBalancer IP not assigned yet. Retrying..."
             sleep 10
           done
-          echo "App is live at: http://$IP/ci-demo-app/hello"
-          curl -f "http://$IP/${{ env.WAR_NAME }}/hello"
+
+          if [ -z "$IP" ]; then
+            echo "LoadBalancer IP was not assigned within 5 minutes."
+            exit 1
+          fi
+
+          echo "Waiting for application to become reachable..."
+
+          for i in {1..30}; do
+            if curl --fail --connect-timeout 5 "http://$IP/${{ env.WAR_NAME }}/hello"; then
+              echo ""
+              echo "Application is live at: http://$IP/${{ env.WAR_NAME }}/hello"
+              exit 0
+            fi
+
+            echo "Application not reachable yet. Retrying in 10 seconds..."
+            sleep 10
+          done
+
+          echo "Application did not become reachable within 5 minutes."
+          exit 1
