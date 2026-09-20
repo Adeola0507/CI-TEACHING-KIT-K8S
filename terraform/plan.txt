@@ -1,0 +1,156 @@
+google_project_service.artifact_registry: Refreshing state... [id=ci-teaching-kit-demo/artifactregistry.googleapis.com]
+google_project_service.container: Refreshing state... [id=ci-teaching-kit-demo/container.googleapis.com]
+google_compute_firewall.admin_access: Refreshing state... [id=projects/ci-teaching-kit-demo/global/firewalls/allow-ci-stack-admin-deola]
+google_compute_firewall.actions_runner_access: Refreshing state... [id=projects/ci-teaching-kit-demo/global/firewalls/allow-github-actions-runner-deola]
+google_compute_instance.ci_stack: Refreshing state... [id=projects/ci-teaching-kit-demo/zones/us-central1-a/instances/ci-teaching-kit-vm]
+google_artifact_registry_repository.ci_demo_repo: Refreshing state... [id=projects/ci-teaching-kit-demo/locations/us-central1/repositories/ci-demo-repo]
+google_container_cluster.ci_demo_cluster: Refreshing state... [id=projects/ci-teaching-kit-demo/locations/us-central1-a/clusters/ci-demo-cluster-deola]
+google_container_node_pool.ci_demo_nodes: Refreshing state... [id=projects/ci-teaching-kit-demo/locations/us-central1-a/clusters/ci-demo-cluster-deola/nodePools/ci-demo-node-pool]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  ~ update in-place
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.ci_stack must be replaced
+-/+ resource "google_compute_instance" "ci_stack" {
+      ~ cpu_platform            = "AMD Rome" -> (known after apply)
+      ~ current_status          = "RUNNING" -> (known after apply)
+      ~ effective_labels        = {} -> (known after apply)
+      - enable_display          = false -> null
+      ~ guest_accelerator       = [] -> (known after apply)
+      ~ id                      = "projects/ci-teaching-kit-demo/zones/us-central1-a/instances/ci-teaching-kit-vm" -> (known after apply)
+      ~ instance_id             = "792704297023512484" -> (known after apply)
+      ~ label_fingerprint       = "42WmSpB8rSM=" -> (known after apply)
+      - labels                  = {} -> null
+      - metadata                = {} -> null
+      ~ metadata_fingerprint    = "O9HrXgKCQIg=" -> (known after apply)
+      ~ metadata_startup_script = <<-EOT # forces replacement
+            #!/bin/bash
+            set -e
+            
+            # Install Docker
+            apt-get update
+            apt-get install -y ca-certificates curl gnupg git
+            install -m 0755 -d /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+            chmod a+r /etc/apt/keyrings/docker.asc
+            echo \
+              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+              $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+              tee /etc/apt/sources.list.d/docker.list > /dev/null
+            apt-get update
+            apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+            
+            # Clone the repo and bring the stack up
+            cd /opt 
+            git clone https://github.com/Adeola0507/CI-TEACHING-KIT-K8S.git ci-teaching-kit-k8s
+          - cd ci-teaching-kit-k8s/CI-TEACHING-KIT-K8S
+          + cd ci-teaching-kit-k8s
+            docker compose up -d --build
+            
+            # Note: this brings the stack up automatically on VM creation. Nexus and the
+            # Jenkins job still need one-time manual configuration (deployer user/role in
+            # Nexus, creating the Jenkins pipeline job) — see the README for those steps,
+            # they're account/state setup, not something a startup script can do safely.
+        EOT
+      + min_cpu_platform        = (known after apply)
+        name                    = "ci-teaching-kit-vm"
+      - resource_policies       = [] -> null
+      ~ self_link               = "https://www.googleapis.com/compute/v1/projects/ci-teaching-kit-demo/zones/us-central1-a/instances/ci-teaching-kit-vm" -> (known after apply)
+        tags                    = [
+            "ci-stack-deola",
+        ]
+      ~ tags_fingerprint        = "AvBEWjdrfGk=" -> (known after apply)
+      ~ terraform_labels        = {} -> (known after apply)
+        # (7 unchanged attributes hidden)
+
+      ~ boot_disk {
+          ~ device_name                = "persistent-disk-0" -> (known after apply)
+          + disk_encryption_key_sha256 = (known after apply)
+          + kms_key_self_link          = (known after apply)
+          ~ source                     = "https://www.googleapis.com/compute/v1/projects/ci-teaching-kit-demo/zones/us-central1-a/disks/ci-teaching-kit-vm" -> (known after apply)
+            # (3 unchanged attributes hidden)
+
+          ~ initialize_params {
+              - enable_confidential_compute = false -> null
+              ~ image                       = "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-12-bookworm-v20260908" -> "debian-cloud/debian-12"
+              ~ labels                      = {} -> (known after apply)
+              ~ provisioned_iops            = 0 -> (known after apply)
+              ~ provisioned_throughput      = 0 -> (known after apply)
+              - resource_manager_tags       = {} -> null
+              ~ type                        = "pd-standard" -> (known after apply)
+                # (2 unchanged attributes hidden)
+            }
+        }
+
+      ~ confidential_instance_config (known after apply)
+
+      ~ network_interface {
+          ~ internal_ipv6_prefix_length = 0 -> (known after apply)
+          + ipv6_access_type            = (known after apply)
+          + ipv6_address                = (known after apply)
+          ~ name                        = "nic0" -> (known after apply)
+          ~ network                     = "https://www.googleapis.com/compute/v1/projects/ci-teaching-kit-demo/global/networks/default" -> "default"
+          ~ network_ip                  = "10.128.0.35" -> (known after apply)
+          - queue_count                 = 0 -> null
+          ~ stack_type                  = "IPV4_ONLY" -> (known after apply)
+          ~ subnetwork                  = "https://www.googleapis.com/compute/v1/projects/ci-teaching-kit-demo/regions/us-central1/subnetworks/default" -> (known after apply)
+          ~ subnetwork_project          = "ci-teaching-kit-demo" -> (known after apply)
+            # (1 unchanged attribute hidden)
+
+          ~ access_config {
+              ~ nat_ip                 = "34.60.24.246" -> (known after apply)
+              ~ network_tier           = "PREMIUM" -> (known after apply)
+                # (1 unchanged attribute hidden)
+            }
+        }
+
+      ~ reservation_affinity (known after apply)
+
+      ~ scheduling (known after apply)
+      - scheduling {
+          - automatic_restart           = true -> null
+          - min_node_cpus               = 0 -> null
+          - on_host_maintenance         = "MIGRATE" -> null
+          - preemptible                 = false -> null
+          - provisioning_model          = "STANDARD" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - shielded_instance_config {
+          - enable_integrity_monitoring = true -> null
+          - enable_secure_boot          = false -> null
+          - enable_vtpm                 = true -> null
+        }
+    }
+
+  # google_container_node_pool.ci_demo_nodes will be updated in-place
+  ~ resource "google_container_node_pool" "ci_demo_nodes" {
+        id                          = "projects/ci-teaching-kit-demo/locations/us-central1-a/clusters/ci-demo-cluster-deola/nodePools/ci-demo-node-pool"
+        name                        = "ci-demo-node-pool"
+        # (11 unchanged attributes hidden)
+
+      ~ node_config {
+          ~ machine_type                = "e2-medium" -> "e2-standard-4"
+            tags                        = []
+            # (19 unchanged attributes hidden)
+
+            # (2 unchanged blocks hidden)
+        }
+
+        # (3 unchanged blocks hidden)
+    }
+
+Plan: 1 to add, 1 to change, 1 to destroy.
+
+Changes to Outputs:
+  ~ nexus_url              = "http://34.60.24.246:8081" -> (known after apply)
+  ~ vm_external_ip         = "34.60.24.246" -> (known after apply)
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.

@@ -25,13 +25,13 @@ variable "machine_type" {
 variable "gke_node_count" {
   description = "Number of nodes in the GKE cluster. 1 is enough for a teaching demo."
   type        = number
-  default     = 1
+  default     = 3
 }
 
 variable "gke_machine_type" {
   description = "Machine type for GKE nodes. e2-medium is the practical minimum for running Tomcat comfortably."
   type        = string
-  default     = "e2-standard-2"
+  default     = "e2-standard-4"
 }
 
 variable "admin_ip" {
